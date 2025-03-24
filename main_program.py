@@ -1,7 +1,7 @@
 import MyModule
 
 while True:
-    print("\nVALIK:")
+    print("VALIK:")
     print("1. Registreerimine")
     print("2. Sisse logimine")
     print("3. Parooli muutmine")
