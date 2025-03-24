@@ -1,48 +1,129 @@
-# Function to register a new user
-def register_user(usernames, passwords):
-    username = input("Enter a username: ")
-    if username in usernames:
-        print("Username already taken!")
-    else:
-        password = input("Enter a password: ")
-        usernames.append(username)
-        passwords.append(password)
-        print(f"User {username} registered successfully!")
+nimi=["admin"]
+salas=["admin123"]
+sees=False
+user=""
 
-# Function to login a user
-def login_user(usernames, passwords):
-    username = input("Enter your username: ")
-    if username not in usernames:
-        print("Username not found!")
-    else:
-        password = input("Enter your password: ")
-        index = usernames.index(username)
-        if passwords[index] == password:
-            print(f"Welcome {username}!")
+def kontroll(p: str) -> bool:
+    """
+    Kontrollib parooli
+    """
+    s=0
+    n=0
+    e=0
+    
+    for t in p:
+        if t.isupper():
+            s+=1
+        if t.isdigit():
+            n+=1
+        if not t.isalpha() and not t.isdigit():
+            e+=1
+    
+    if len(p)>=8 and s>=1 and e>=1:
+        return True
+    return False
+
+def reg():
+    """
+    Registreerimine
+    """
+    n=input("Nimi: ")
+    if n in nimi:
+        print("Nimi on olemas")
+        return
+    
+    v=input("Ise või genereerida (i/g)? ")
+    if v=="i":
+        p=input("Parool: ")
+        if kontroll(p):
+            nimi.append(n)
+            salas.append(p)
+            print("Registreeritud")
         else:
-            print("Incorrect password!")
+            print("Parool on nõrk")
+    elif v=="g":
+        import random
+        p=""
+        while not kontroll(p):
+            s1=".,:;!_*-+()/#¤%&"
+            s2="0123456789"
+            s3="qwertyuiopasdfghjklzxcvbnm"
+            s4=s3.upper()
+            s5=s1+s2+s3+s4
+            ls=list(s5)
+            random.shuffle(ls)
+            p=''.join([random.choice(ls) for x in range(12)])
+        print("Sinu parool on", p)
+        nimi.append(n)
+        salas.append(p)
+        print("Registreeritud")
 
-# Function to change a user's username or password
-def change_credentials(usernames, passwords):
-    username = input("Enter your username to change your details: ")
-    if username not in usernames:
-        print("Username not found!")
+def login():
+    """
+    Autoriseerimine
+    """
+    global sees, user
+    n=input("Nimi: ")
+    p=input("Parool: ")
+    
+    if n in nimi:
+        i=nimi.index(n)
+        if salas[i]==p:
+            sees=True
+            user=n
+            print("Logitud")
+        else:
+            print("Vale parool")
     else:
-        new_username = input("Enter new username (or press Enter to keep the same): ")
-        if new_username:
-            usernames[usernames.index(username)] = new_username
-            username = new_username
-        new_password = input("Enter new password (or press Enter to keep the same): ")
-        if new_password:
-            passwords[usernames.index(username)] = new_password
-        print(f"Details for {username} updated successfully!")
+        print("Kasutaja puudub")
 
-# Function to recover a forgotten password
-def recover_password(usernames, passwords):
-    username = input("Enter your username to recover your password: ")
-    if username not in usernames:
-        print("Username not found!")
+def parool():
+    """
+    Parooli muutmine
+    """
+    if not sees:
+        print("Logi sisse")
+        return
+    
+    p=input("Uus parool: ")
+    if kontroll(p):
+        i=nimi.index(user)
+        salas[i]=p
+        print("Parool muudetud")
     else:
-        index = usernames.index(username)
-        print(f"Your password is: {passwords[index]}")
+        print("Parool on nõrk")
 
+def taasta():
+    """
+    Parooli taastamine
+    """
+    n=input("Nimi: ")
+    if n in nimi:
+        import random
+        p=""
+        while not kontroll(p):
+            s1=".,:;!_*-+()/#¤%&"
+            s2="0123456789"
+            s3="qwertyuiopasdfghjklzxcvbnm"
+            s4=s3.upper()
+            s5=s1+s2+s3+s4
+            ls=list(s5)
+            random.shuffle(ls)
+            p=''.join([random.choice(ls) for x in range(12)])
+        print("Uus parool on", p)
+        i=nimi.index(n)
+        salas[i]=p
+    else:
+        print("Kasutaja puudub")
+
+def logout():
+    """
+    Väljalogimine
+    """
+    global sees, user
+    if sees:
+        sees=False
+        user=""
+        print("Välja logitud")
+    else:
+        print("Pole sisse logitud")
