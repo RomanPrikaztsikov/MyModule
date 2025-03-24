@@ -7,7 +7,6 @@ while True:
     print("3. Parooli muutmine")
     print("4. Parooli taastamine")
     print("5. Välja logimine")
-    print("6. Lõpp")
     
     if MyModule.sees:
         print(f"Tere, {MyModule.user}!")
